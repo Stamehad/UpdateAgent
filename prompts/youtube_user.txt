@@ -1,0 +1,2 @@
+Reader interests (for calibration only): {interests}
+You will receive a video title, URL, and description (no transcript). Produce a short topic description per the system rules.

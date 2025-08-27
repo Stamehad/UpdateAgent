@@ -1,0 +1,42 @@
+storage_dir: "./data"
+user_agent: "StayUpToDate/0.1"
+interests: >
+  AI research (reasoning/LLMs), drug discovery.
+
+sources:
+  blogs:
+    - key: scott_aaronson
+      display_name: "Shtetl‑Optimized (Scott Aaronson)"
+      homepage: "https://scottaaronson.blog/"
+      feed: "https://scottaaronson.blog/?feed=atom"
+      enabled: true
+    
+  youtube:
+    - key: ai_coffee_break
+      display_name: "AI Coffee Break with Letitia"
+      id: UCobqgqE4i5Kf7wrxRxhToQA
+      digest_mode: "title_plus_description"   # or "llm" or "title_only"
+      enabled: true
+  
+  biorxiv:
+    - key: bio_ml_biomod
+      display_name: "bioRxiv — ML for structure & drug discovery"
+      keywords:
+        - machine learning
+        - deep learning
+        - protein
+        - structure
+        - folding
+        - ligand
+        - RNA
+        - DNA
+        - drug discovery
+        - QSAR
+        - ADMET
+      days: 2            # tighter window (dedupe still prevents repeats)
+      max_results: 200   # look at up to 200 items in the window
+      max_keep: 5        # show at most 5 newest matches
+      digest_mode: "abstract_only"
+      enabled: true
+
+  

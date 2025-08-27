@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Daily Digest — {{ date }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { max-width: 800px; margin: 2rem auto; font-family: system-ui, -apple-system, sans-serif; line-height: 1.5; }
+    h1 { font-size: 1.8rem; }
+    h2 { margin-top: 2rem; }
+    .meta { font-size: 0.9rem; color: #555; }
+    .item { padding-bottom: 1.5rem; border-bottom: 1px solid #ddd; }
+    pre { white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Daily Digest — {{ date }}</h1>
+
+  {% if stats and stats|length > 0 %}
+  <section>
+    <h3>Summary</h3>
+    <ul>
+      {% for s in stats %}
+      <li>[{{ s.kind|upper }} • {{ s.name }}] showing {{ s.shown }}{% if s.cap %}/{{ s.cap }}{% endif %}{% if s.matched_total is not none %} from {{ s.matched_total }} matches{% endif %}</li>
+      {% endfor %}
+    </ul>
+    <hr/>
+  </section>
+  {% endif %}
+
+  {% for item in items %}
+  <div class="item">
+    <h2>[{{ item.post.kind|upper }} • {{ item.post.metadata.display_name if item.post.metadata.display_name else item.post.source_key }}] {{ item.post.title }}</h2>
+    <div class="meta">
+      <a href="{{ item.post.url }}">{{ item.post.url }}</a>{% if item.post.published %} · {{ item.post.published }}{% endif %}
+    </div>
+    <pre>{{ item.summary }}</pre>
+  </div>
+  {% endfor %}
+</body>
+</html>

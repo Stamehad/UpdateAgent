@@ -1,0 +1,19 @@
+# Daily Digest — {{ date }}
+
+{% if stats and stats|length > 0 %}
+**Summary:**
+{% for s in stats -%}
+- [{{ s.kind|upper }} • {{ s.name }}] showing {{ s.shown }}{% if s.cap %}/{{ s.cap }}{% endif %}{% if s.matched_total is not none %} from {{ s.matched_total }} matches{% endif %}
+{%- endfor %}
+
+---
+{% endif %}
+
+{% for item in items %}
+## [{{ item.post.kind|upper }} • {{ item.post.metadata.display_name if item.post.metadata.display_name else item.post.source_key }}] {{ item.post.title }}
+{{ item.post.url }}{% if item.post.published %} · {{ item.post.published }}{% endif %}
+
+{{ item.summary }}
+
+---
+{% endfor %}

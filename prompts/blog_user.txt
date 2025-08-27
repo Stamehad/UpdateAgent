@@ -1,0 +1,4 @@
+Reader interests (for calibration, not filtering):
+{interests}
+
+You will receive a blog post: title, URL, and body text (markdown). Provide the summary as requested above; do not exceed ~160 words. If content is meta/housekeeping, keep it minimal.

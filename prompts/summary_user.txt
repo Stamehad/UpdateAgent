@@ -1,0 +1,9 @@
+Input: a single blog post in Markdown.
+Tasks:
+1) 6–10 bullet summary (no fluff).
+2) “What you’ll learn” (2–4 bullets).
+3) “Should I read?” judgement in one line: High / Medium / Low, with 1–2 reasons.
+4) If applicable, note concrete follow-ups (papers, code, datasets).
+
+User interests:
+{interests}
