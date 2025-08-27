@@ -70,10 +70,10 @@ sources:
       enabled: true
 
   youtube:
-    - key: matthew_berman
-      display_name: "Matthew Berman"
-      feed: "https://www.youtube.com/feeds/videos.xml?channel_id=UCawZsQWqfGSbCI5yjkdVkTA"
-      digest_mode: "title_plus_description"
+    - key: ai_coffee_break
+      display_name: "AI Coffee Break with Letitia"
+      id: UCobqgqE4i5Kf7wrxRxhToQA
+      digest_mode: "title_plus_description"   # or "llm" or "title_only"
       enabled: true
 
   biorxiv:
