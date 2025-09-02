@@ -44,7 +44,11 @@ stay_up_to_date_agent/
    conda activate update_agent
    pip install -r requirements.txt
    ```
-3. Copy `.env.example` to `.env` and add your OpenAI API key.
+3. Create `.env` and add your OpenAI API key as
+    ```
+    OPENAI_API_KEY=...
+    ```
+    With some minor changes in `/agent` you should be able to use other LLMs.
 
 ## Usage
 
