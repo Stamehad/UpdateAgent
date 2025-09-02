@@ -36,14 +36,29 @@ def _extract_markdown(url: str) -> str | None:
 
 def fetch_new(config_entry: dict, state: dict, ua: str) -> List[Post]:
     """
-    config_entry: {key, feed?, homepage?, enabled?}
+    config_entry: {key, feed?, homepage?, substack?, enabled?}
+    - If `feed` is provided, it is used as-is.
+    - Else if `substack` is provided (e.g., "https://coolai.substack.com"), the feed URL is computed as `<substack>/feed`.
+    - Else if `homepage` looks like a Substack (e.g., contains ".substack.com"), the feed URL is computed as `<homepage>/feed`.
+    - Else fallback to auto-discovery via `_discover_feed`.
     """
     key = config_entry["key"]
     if not config_entry.get("enabled", True):
         return []
 
     headers = {"User-Agent": ua, "Accept": "application/xml, text/html;q=0.9,*/*;q=0.8"}
-    feed_url = config_entry.get("feed") or _discover_feed(config_entry.get("homepage", ""), headers)
+    feed_url = config_entry.get("feed")
+    if not feed_url:
+        substack_home = config_entry.get("substack")
+        if substack_home:
+            feed_url = substack_home.rstrip("/") + "/feed"
+    if not feed_url:
+        homepage = config_entry.get("homepage", "")
+        if homepage and ".substack.com" in homepage:
+            feed_url = homepage.rstrip("/") + "/feed"
+    if not feed_url:
+        # Fallback: try to discover from homepage links
+        feed_url = _discover_feed(config_entry.get("homepage", ""), headers)
     if not feed_url:
         return []
 

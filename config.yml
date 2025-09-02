@@ -3,6 +3,24 @@ user_agent: "StayUpToDate/0.1"
 interests: >
   AI research (reasoning/LLMs), drug discovery.
 
+output:
+  # where to save rendered files (defaults to data/reports)
+  save_dir: "./data/reports"
+
+  # which formats to generate (default: ["html"])
+  formats: ["html"]        # allowed: "html", "md"
+
+  # iOS integrations (both default to off)
+  ios:
+    icloud:
+      enabled: false
+      # optional: custom folder name in iCloud Drive
+      folder: "BlogDigest"
+    notes:
+      enabled: false
+      # optional: customize note title; {date} → YYYY-MM-DD
+      title_template: "Daily Digest — {date}"
+
 sources:
   blogs:
     - key: scott_aaronson

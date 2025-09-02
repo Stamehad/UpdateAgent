@@ -8,7 +8,8 @@ A lightweight Python tool that helps you keep up with blogs, YouTube channels, a
 - **YouTube tracking**: Subscribe to channel RSS feeds to capture video titles and descriptions without visiting YouTube.
 - **bioRxiv integration**: Fetch recent preprints filtered by keywords and include abstracts in the digest.
 - **Summarization**: Feed content into an LLM (OpenAI API) to generate concise summaries or abstracts, customizable per source.
-- **Digest reports**: Produces both Markdown and HTML digests with summaries, including per‑source statistics (e.g. how many matched vs. shown).
+- **Digest reports**: Produces HTML (default) and optional Markdown digests with summaries, including per‑source statistics. Output folder is configurable.
+- **Delivery options**: In addition to saving locally, you can (optionally, macOS only) copy the digest to iCloud Drive and/or Apple Notes for iPhone viewing.
 - **Automation**: Can be run manually, via macOS `launchd`, or in CI/cloud to deliver digests automatically.
 
 ## Project Structure
@@ -89,11 +90,32 @@ sources:
       enabled: true
 ```
 
+### Output and Delivery
+
+Configure output formats and delivery in `config.yml` under `output:`. Example:
+```yaml
+output:
+  save_dir: "./data/reports"   # folder for rendered files
+  formats: ["html", "md"]      # which formats to generate
+  ios:
+    icloud:
+      enabled: true
+      folder: "BlogDigest"
+    notes:
+      enabled: true
+      title_template: "Daily Digest — {date}"
+```
+CLI flags can override these (see `python -m src.main --help`).
+
 ## Output
 
-Each run generates:
-- `data/reports/digest-YYYY-MM-DD.md`
+Each run generates files according to your config. By default:
 - `data/reports/digest-YYYY-MM-DD.html`
+
+If enabled:
+- `digest-YYYY-MM-DD.md` in the same folder
+- Copies in iCloud Drive (e.g. `~/Library/Mobile Documents/com~apple~CloudDocs/BlogDigest/latest.html`)
+- A note in Apple Notes titled according to `title_template`
 
 The digest includes a summary section showing per‑source counts and truncation (e.g. *showing 5/5 from 18 matches*).
 
