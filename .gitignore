@@ -1,0 +1,35 @@
+# OS / editor cruft
+.DS_Store
+.idea/
+.vscode/
+
+# Python build/test caches
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual envs
+venv/
+.venv/
+
+# Local config and secrets
+.env
+config_local.yml
+
+# Data and logs
+data/
+log.out
+log.err
+*.tmp
+
+# Weekly (keep local-only for now)
+src/weekly_papers/
+templates/weekly_papers*.j2
+src/report/templates/weekly_papers_notes.html.j2
+weekly_config.yml
+run_weekly.sh
+
+# Ad-hoc helpers not for publication
+tests/read_tweets_example.py
+tests/manual_youtube_fetch.py
