@@ -111,6 +111,34 @@ output:
 ```
 CLI flags can override these (see `python -m src.main --help`).
 
+### Source Limits and Caps
+
+To prevent accidental overloads (e.g., a misconfigured source yielding dozens of items), the app applies per‑source caps before a global cap:
+
+- YouTube per‑channel cap: keeps up to 5 videos per channel per run by default.
+- Blogs per‑source cap: keeps up to 2 posts per blog per run by default.
+- Global cap: after per‑source caps, keeps up to 50 items overall by default.
+
+Configure in `config.yml` under `sources`:
+
+```yaml
+sources:
+  youtube_per_channel_limit: 5   # per‑channel video cap
+  blog_per_source_limit: 2       # per‑blog post cap
+  blogs:
+    - key: ...
+  youtube:
+    - key: ...
+```
+
+Or via CLI overrides:
+
+- `--yt-per-channel N` to change the per‑channel video cap
+- `--blog-per-source N` to change the per‑blog post cap
+- `--limit N` to change the global cap
+
+Only posts that actually appear in the digest are marked as “seen”. Posts fetched but excluded by caps remain eligible for the next run.
+
 ## Output
 
 Each run generates files according to your config. By default:

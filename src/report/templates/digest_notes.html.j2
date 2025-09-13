@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Daily Digest — {{ date }}</title>
+  </head>
+  <body>
+    {% macro clean_bullet(s) -%}
+      {%- set t = s.strip() -%}
+      {%- if t[:2] in ['• ', '- ', '* ', '– ', '— '] -%}
+        {{ t[2:] }}
+      {%- elif t|length > 3 and t[0] in '0123456789' and t[1:3] == '. ' -%}
+        {{ t[3:] }}
+      {%- else -%}
+        {{ t }}
+      {%- endif -%}
+    {%- endmacro %}
+    <!-- Heading is omitted to avoid duplicating the Apple Notes title -->
+    <hr/>
+
+    {% if items|length == 0 %}
+      <p>No items today.</p>
+    {% else %}
+      {% for item in items %}
+        <h2>[{{ item.post.kind|upper }} • {{ item.post.metadata.display_name if item.post.metadata.display_name else item.post.source_key }}] {{ item.post.title }}</h2>
+        <p><a href="{{ item.post.url }}">{{ item.post.url }}</a></p>
+        {% if item.summary %}
+          {% set lines = item.summary.split('\n') %}
+          <p>{{ lines[0] }}</p>
+          {% if lines|length > 1 %}
+            <ul>
+              {% for b in lines[1:] %}
+                {% set cleaned = clean_bullet(b) %}
+                {% if cleaned.strip() %}
+                  <li>{{ cleaned.strip() }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endif %}
+        <hr/>
+      {% endfor %}
+    {% endif %}
+
+    {#
+      Intentionally no hashtags here. Delivery appends hashtags so we avoid
+      duplicates and keep a single source of truth for Notes tag rendering.
+    #}
+  </body>
+  </html>

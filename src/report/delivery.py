@@ -78,9 +78,12 @@ def deliver_to_apple_notes(
 
     tags_html = ""
     if tags:
-        # Ensure a trailing space for Notes hashtag detection
+        # Ensure a trailing space for Notes hashtag detection; keep markup minimal
         tags_line = " ".join(tags) + " "
-        tags_html = f"<hr/><p>{tags_line}</p>"
+        tags_html = f"<p>{tags_line}</p>"
+
+    # Escape title for safe single-quoted embedding in JXA
+    title_escaped = (note_title or "").replace("'", "\\'")
 
     # JXA script: prefer iCloud account; create/overwrite note with given title
     jxa = f"""
@@ -93,20 +96,19 @@ def deliver_to_apple_notes(
       const p = '{safe_path}';
       const html = fm.doShellScript('cat ' + p.replace(/"/g,'\\"'));
       const taggedHtml = html + '\\n\\n' + `{tags_html}`;
-      const desiredTitle = '{note_title.replace("'", "\\'")}';
+      const desiredTitle = '{title_escaped}';
 
       const accounts = app.accounts();
       const icloud = accounts.find(a => /icloud/i.test(a.name())) || accounts[0];
       const folders = icloud ? icloud.folders() : app.folders();
       const notesFolder = folders.find(f => f.name() === 'Notes') || folders[0];
 
-      let note = notesFolder.notes().find(n => n.name() === desiredTitle);
-      if (!note) {{
-        note = app.Note({{name: desiredTitle, body: taggedHtml}});
-        notesFolder.notes.push(note);
-      }} else {{
-        note.body = taggedHtml;
-      }}
+      // Immutable policy: always create a new note; never overwrite
+      const note = app.Note({{name: desiredTitle, body: taggedHtml}});
+      notesFolder.notes.push(note);
+
+      // Leave body as-is; some devices tokenize hashtags only after a user edit.
+
     }})();
     """
 

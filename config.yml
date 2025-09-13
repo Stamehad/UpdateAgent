@@ -22,6 +22,9 @@ output:
       title_template: "Daily Digest — {date}"
 
 sources:
+  # Per-source caps applied before global limit (see README)
+  youtube_per_channel_limit: 5   # keep up to 5 new videos per channel per run
+  blog_per_source_limit: 2       # keep up to 2 new blog posts per source per run
   blogs:
     - key: scott_aaronson
       display_name: "Shtetl‑Optimized (Scott Aaronson)"

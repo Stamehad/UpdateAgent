@@ -61,11 +61,14 @@ def render_digest(
     reports_dir = Path(out_dir) if out_dir else (storage_dir / "reports")
     ensure_dir(reports_dir)
 
-    want_html = "html" in {f.lower() for f in formats}
-    want_md = "md" in {f.lower() for f in formats}
+    fmtset = {f.lower() for f in formats}
+    want_html = "html" in fmtset
+    want_md = "md" in fmtset
+    want_notes = "notes" in fmtset
 
     md_path: Optional[Path] = None
     html_path: Optional[Path] = None
+    notes_path: Optional[Path] = None
 
     # Markdown (optional)
     if want_md:
@@ -90,5 +93,17 @@ def render_digest(
         except Exception as e:
             print(f"[render_digest] HTML render failed: {e}")
             html_path = None
+
+    # Apple Notes-friendly HTML (optional)
+    if want_notes:
+        try:
+            notes_tpl_path = Path(__file__).parent / "templates" / "digest_notes.html.j2"
+            notes_tpl = Template(notes_tpl_path.read_text(encoding="utf-8"))
+            notes_out = notes_tpl.render(date=today, items=items)
+            notes_path = reports_dir / f"digest-notes-{today}.html"
+            notes_path.write_text(notes_out, encoding="utf-8")
+        except Exception as e:
+            print(f"[render_digest] Notes HTML render failed: {e}")
+            notes_path = None
 
     return md_path, html_path

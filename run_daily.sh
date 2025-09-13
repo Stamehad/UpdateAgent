@@ -11,7 +11,7 @@ if command -v conda >/dev/null 2>&1; then
 fi
 
 # Allow overriding the config without editing the file
-CONFIG="${CONFIG:-config.yml}"
+CONFIG="${CONFIG:-config_local.yml}"
 
 # Visible markers so you see something even when there are no new items
 echo "[update_agent] START $(date +'%F %T')"
