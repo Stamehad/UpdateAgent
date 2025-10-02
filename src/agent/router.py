@@ -1,9 +1,12 @@
+import logging
 from pathlib import Path
-from typing import Dict
+
 from openai import OpenAI
+
 from src.sources.base import Post
 
 MODEL = "gpt-4o-mini"  # good $/quality
+logger = logging.getLogger(__name__)
 
 def load_prompt_texts(prompts_dir: Path, kind: str, interests: str) -> tuple[str, str]:
     system = (prompts_dir / f"{kind}_system.txt").read_text(encoding="utf-8")
@@ -40,16 +43,39 @@ def summarize_post(post: Post, client: OpenAI, prompts_dir: Path, interests: str
     # default path: use LLM with source-specific prompts
     system, user = load_prompt_texts(prompts_dir, post["kind"], interests)
     header = f"Title: {post['title']}\nURL: {post['url']}\n\n"
-    text = header + (post.get("text") or "")
-    resp = client.responses.create(
-        model=MODEL,
-        input=[
-            {"role": "system", "content": system},
-            {"role": "user", "content": user},
-            {"role": "user", "content": text[:80_000]},
-        ],
-    )
-    return {"post": post, "summary": resp.output_text}
+    body = (post.get("text") or "")
+    text = header + body
+    try:
+        resp = client.responses.create(
+            model=MODEL,
+            input=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+                {"role": "user", "content": text[:80_000]},
+            ],
+        )
+        summary = resp.output_text
+    except Exception:  # noqa: BLE001 - we want to keep digest generation resilient
+        ident = post.get("url") or post.get("id") or post.get("title") or "unknown post"
+        logger.exception("LLM summarization failed for %s; using fallback content", ident)
+        summary = fallback_summary(post, body)
+    return {"post": post, "summary": summary}
+
+
+def fallback_summary(post: Post, body: str) -> str:
+    paragraph = next((p.strip() for p in body.split("\n\n") if p.strip()), "")
+    if paragraph:
+        return paragraph[:1200]
+
+    title = post.get("title") or ""
+    url = post.get("url") or ""
+    if title and url:
+        return f"{title}\n{url}"
+    if title:
+        return title
+    if url:
+        return url
+    return "Summary unavailable."
 
 
 # def summarize_post(post: Post, client: OpenAI, prompts_dir: Path, interests: str) -> Dict:

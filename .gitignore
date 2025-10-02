@@ -33,3 +33,9 @@ run_weekly.sh
 # Ad-hoc helpers not for publication
 tests/read_tweets_example.py
 tests/manual_youtube_fetch.py
+
+notebook.ipynb
+instructions.md
+run_daily2.sh
+launchd_probe.py
+config_local.yml
